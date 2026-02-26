@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════
+   OHANG Dynamic Theme Variables
+   Managed by MoodThemeProvider.tsx + ThemeContext.tsx (legacy)
+   ═══════════════════════════════════════════════════════ */
+:root {
+  /* ── Legacy Theme Variables (backward compat) ─────── */
+  --theme-primary: #a78bfa;
+  --theme-glow: 0 0 20px rgba(167, 139, 250, 0.4);
+  --theme-text: #a78bfa;
+  --bg-deep: #0a0a0a;
+
+  /* ── New OHANG Mood System Variables ────────────────
+     These are dynamically set by MoodThemeProvider.tsx
+     via JavaScript. Defaults shown here for SSR. */
+  --ohang-accent: #a78bfa;
+  --ohang-tint: rgba(167, 139, 250, 0.02);
+  --ohang-glow: 0 0 40px rgba(167, 139, 250, 0.10);
+  --ohang-border: rgba(255, 255, 255, 0.06);
+  --ohang-gradient-from: #0a0a0a;
+  --ohang-gradient-via: #171717;
+  --ohang-gradient-to: #0a0a0a;
+  --ohang-text-accent: #c4b5fd;
+
+  /* ── Typography ─────────────────────────────────── */
+  --font-sans: var(--font-outfit, system-ui, -apple-system, sans-serif);
+  --font-serif: var(--font-crimson-pro, var(--font-cinzel, Georgia, serif));
+}
+
+/* ═══════════════════════════════════════════════════════
+   Legacy Dynamic Utilities (preserved for existing components)
+   ═══════════════════════════════════════════════════════ */
+.text-theme {
+  color: var(--theme-primary);
+  text-shadow: var(--theme-glow);
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+.border-theme {
+  border-color: var(--theme-primary);
+  transition: border-color 0.5s ease;
+}
+
+.bg-theme-glow {
+  background-color: var(--theme-primary);
+  box-shadow: var(--theme-glow);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   New OHANG Mood Utilities
+   ═══════════════════════════════════════════════════════ */
+.text-mood {
+  color: var(--ohang-text-accent);
+  transition: color 0.7s ease;
+}
+
+.border-mood {
+  border-color: var(--ohang-border);
+  transition: border-color 0.7s ease;
+}
+
+.glow-mood {
+  box-shadow: var(--ohang-glow);
+  transition: box-shadow 0.7s ease;
+}
+
+.bg-mood-gradient {
+  background: linear-gradient(
+    to bottom,
+    var(--ohang-gradient-from),
+    var(--ohang-gradient-via),
+    var(--ohang-gradient-to)
+  );
+  transition: background 1s ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Glassmorphism Base
+   ═══════════════════════════════════════════════════════ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--ohang-accent, var(--theme-primary));
+  box-shadow: var(--ohang-glow, var(--theme-glow));
+}
+
+/* ═══════════════════════════════════════════════════════
+   Mood Card (CSS-only variant for non-component usage)
+   ═══════════════════════════════════════════════════════ */
+.mood-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--ohang-border);
+  border-radius: 1rem;
+  box-shadow: var(--ohang-glow);
+  transition: all 0.7s ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Scrollbar Styling (Subtle dark theme)
+   ═══════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════
+   Selection Color
+   ═══════════════════════════════════════════════════════ */
+::selection {
+  background: var(--ohang-accent, #a78bfa);
+  color: #000;
+  background-color: color-mix(in srgb, var(--ohang-accent, #a78bfa) 30%, transparent);
+}

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(node -e \"const p = require\\(''C:/Users/jhhaa/OHANG/node_modules/manseryeok/package.json''\\); console.log\\(p.name, p.version, Object.keys\\(p.exports || {}\\).join\\('',''\\) || ''no exports''\\);\")",
+      "Bash(npx tsc:*)",
+      "Bash(node -e:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(ls:*)",
+      "Bash(npx next build)",
+      "Bash(powershell -Command:*)"
+    ]
+  }
+}
