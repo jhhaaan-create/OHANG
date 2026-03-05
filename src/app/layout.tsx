@@ -16,6 +16,7 @@ import { defaultMetadata, appJsonLd } from "@/lib/metadata";
 import { MoodBackground } from "@/components/ui/MoodBackground";
 import { StarError } from "@/components/ui/StarError";
 import { Analytics } from "@vercel/analytics/react";
+import BottomNav from "@/components/layout/BottomNav";
 import "./globals.css";
 
 // ── Typography ───────────────────────────────────────────
@@ -85,8 +86,9 @@ export default function RootLayout({
             <MoodBackground />
 
             {/* 2. Main Content Layer */}
-            <main className="relative z-10">
+            <main className="relative z-10 pb-20">
               {children}
+              <BottomNav />
             </main>
 
             {/* 3. Toast Notifications (sonner) */}

@@ -15,7 +15,7 @@ import { getAuthenticatedUser, resolveUserId } from "@/lib/ai/cache";
 export const dynamic = "force-dynamic";
 
 const CheckoutSchema = z.object({
-    plan: z.enum(["basic", "pro", "destiny", "red_flag", "couple_scan", "retro_mode"]),
+    plan: z.enum(["basic", "pro", "destiny", "red_flag", "couple_scan", "retro_mode", "ohang_pro"]),
 });
 
 // Plan → { priceId, mode }
@@ -26,6 +26,7 @@ const PLAN_CONFIG: Record<string, { priceKey: keyof typeof PRICE_IDS; mode: "sub
     red_flag:    { priceKey: "red_flag",         mode: "payment",      tier: "basic" },
     couple_scan: { priceKey: "couple_scan",      mode: "payment",      tier: "basic" },
     retro_mode:  { priceKey: "retro_mode",       mode: "payment",      tier: "basic" },
+    ohang_pro:   { priceKey: "ohang_pro_monthly", mode: "subscription", tier: "pro" },
 };
 
 export async function POST(req: NextRequest) {

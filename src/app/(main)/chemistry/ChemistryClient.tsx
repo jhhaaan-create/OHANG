@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { CompatibilitySchema } from "@/lib/ai/schemas";
 import { useStreamingResult } from "@/hooks/useStreamingResult";
+import { useInviteRealtime } from "@/hooks/useInviteRealtime";
 import { useTone } from "@/lib/tone/ToneProvider";
-import { buildShareUrl } from "@/lib/sharing/shareUtils";
+import { buildShareUrl, share } from "@/lib/sharing/shareUtils";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import CompatibilityResult from "@/components/chemistry/organisms/CompatibilityResult";
 import ErrorFallback from "@/components/ui/ErrorFallback";
@@ -27,10 +29,22 @@ interface PersonForm {
 const EMPTY_PERSON: PersonForm = { year: "", month: "", day: "", hour: "", gender: "female" };
 
 export default function ChemistryClient() {
+    const router = useRouter();
     const [personA, setPersonA] = useState<PersonForm>(EMPTY_PERSON);
     const [personB, setPersonB] = useState<PersonForm>(EMPTY_PERSON);
     const [showShare, setShowShare] = useState(false);
+    const [activeInviteId, setActiveInviteId] = useState<string | null>(null);
+    const [inviteUrl, setInviteUrl] = useState<string | null>(null);
     const { tone } = useTone();
+
+    // ── Realtime: notify when partner completes ──
+    useInviteRealtime({
+        inviteId: activeInviteId ?? "",
+        enabled: !!activeInviteId,
+        onPartnerComplete: (partnerResultId) => {
+            router.push(`/chemistry/result?b=${partnerResultId}`);
+        },
+    });
 
     const { data, isLoading, error, request, clearError } = useStreamingResult({
         api: "/api/analyze/compatibility",
@@ -76,6 +90,37 @@ export default function ChemistryClient() {
         );
     }
 
+    // ── Create invite link for partner ──
+    const handleCreateInvite = useCallback(async () => {
+        haptic.press();
+        try {
+            const res = await fetch("/api/invite", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "create",
+                    resultId: "latest",
+                }),
+            });
+            const result = await res.json();
+            if (result.inviteUrl) {
+                setInviteUrl(result.inviteUrl);
+                setActiveInviteId(result.invite?.id ?? null);
+                try {
+                    await share({
+                        title: "Check our chemistry on OHANG 💜",
+                        text: "I just got my soul blueprint. Want to see our compatibility?",
+                        url: result.inviteUrl,
+                    });
+                } catch {
+                    // User cancelled share — URL is still available
+                }
+            }
+        } catch {
+            console.error("[ChemistryClient] Failed to create invite");
+        }
+    }, []);
+
     if (data?.chemistry_label) {
         return (
             <>
@@ -84,6 +129,22 @@ export default function ChemistryClient() {
                     isStreaming={isLoading}
                     onShare={() => setShowShare(true)}
                 />
+
+                {/* Invite Partner CTA */}
+                <div className="mt-6 space-y-3">
+                    <button
+                        onClick={handleCreateInvite}
+                        className="w-full py-3.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border border-white/10 shadow-lg shadow-violet-500/10 hover:brightness-110 active:scale-[0.97] transition-all"
+                    >
+                        💜 파트너에게 초대 링크 보내기
+                    </button>
+                    {inviteUrl && (
+                        <p className="text-center text-[10px] text-white/30">
+                            초대 링크가 생성되었습니다 — 48시간 유효
+                        </p>
+                    )}
+                </div>
+
                 <ShareSheet
                     isOpen={showShare}
                     onClose={() => setShowShare(false)}

@@ -32,10 +32,17 @@ const RequestSchema = z.object({
     image: z.string()
         .max(10 * 1024 * 1024, 'Image data too large. Maximum 10MB.') // Security Audit H-02
         .refine(
-            (val) => val.startsWith('data:image/') ||
-                (val.startsWith('https://') &&
-                    (val.includes('.vercel-storage.com') || val.includes('.public.blob.vercel-storage.com'))),
-            'Only Base64 image data or Vercel Blob URLs accepted'
+            (val) => {
+                if (val.startsWith('data:image/')) return true;
+                const allowed = ['vercel-storage.com', 'blob.vercel-storage.com', 'supabase.co/storage'];
+                try {
+                    const hostname = new URL(val).hostname;
+                    return val.startsWith('https://') && allowed.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+                } catch {
+                    return false;
+                }
+            },
+            { message: 'Only images from verified storage providers are accepted' }
         ),
     tone: z.enum(['savage', 'balanced', 'gentle']).default('balanced'),
 });

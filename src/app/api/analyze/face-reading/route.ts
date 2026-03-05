@@ -20,9 +20,16 @@ export const dynamic = 'force-dynamic';
 
 const RequestSchema = z.object({
     imageUrl: z.string().url().refine(
-        (url) => url.startsWith('https://') &&
-            (url.includes('vercel-storage.com') || url.includes('blob.vercel-storage.com')),
-        'Only Vercel Blob URLs accepted'
+        (url) => {
+            const allowed = ['vercel-storage.com', 'blob.vercel-storage.com', 'supabase.co/storage'];
+            try {
+                const hostname = new URL(url).hostname;
+                return url.startsWith('https://') && allowed.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+            } catch {
+                return false;
+            }
+        },
+        { message: 'Only images from verified storage providers are accepted' }
     ),
     sajuContext: z.any().optional().nullable(),
     tone: z.enum(['savage', 'balanced', 'gentle']).default('balanced'),

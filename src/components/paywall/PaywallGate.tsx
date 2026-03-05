@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Lock, Sparkles, ArrowRight, X, Crown, Zap, Star, Shield } from "lucide-react";
+import { Lock, Sparkles, ArrowRight, X, Crown, Zap, Star, Shield, Share2 } from "lucide-react";
 import { useMoodTheme } from "@/providers/MoodThemeProvider";
+import ShareViralButton from "@/components/ui/ShareViralButton";
 
 // ══════════════════════════════════════════════════════════
 // OHANG PaywallGate — God-Tier Loss Aversion Engine
@@ -40,6 +41,8 @@ interface PaywallGateProps {
   socialProofCount?: number;
   /** Locale for i18n */
   locale?: "ko" | "en";
+  /** If set, allow share-to-unlock as alternative to payment */
+  shareUnlockFeature?: "red_flag" | "couple_scan" | "retro_mode" | "celeb_match";
 }
 
 // Tier hierarchy
@@ -360,9 +363,20 @@ export default function PaywallGate({
   className = "",
   socialProofCount = 4832,
   locale = "ko",
+  shareUnlockFeature,
 }: PaywallGateProps) {
   const [showModal, setShowModal] = useState(false);
+  const [isShareUnlocked, setIsShareUnlocked] = useState(false);
   const { palette } = useMoodTheme();
+
+  // ── Share-to-Unlock check on mount ──
+  useEffect(() => {
+    if (!shareUnlockFeature) return;
+    fetch(`/api/actions/unlock?feature=${shareUnlockFeature}`)
+      .then(r => r.json())
+      .then(d => setIsShareUnlocked(d.unlocked))
+      .catch(() => {});
+  }, [shareUnlockFeature]);
   const text = t(locale);
 
   // Pulsing glow motion
@@ -409,8 +423,8 @@ export default function PaywallGate({
     }
   }, [onUpgrade]);
 
-  // If user has access, render children normally
-  if (TIER_LEVEL[tier] >= TIER_LEVEL[requiredTier]) {
+  // If user has access (paid or share-unlocked), render children normally
+  if (TIER_LEVEL[tier] >= TIER_LEVEL[requiredTier] || isShareUnlocked) {
     return <>{children}</>;
   }
 
@@ -538,6 +552,31 @@ export default function PaywallGate({
               <Lock size={20} style={{ color: palette.accent }} />
             </div>
           </motion.div>
+
+          {/* Share-to-Unlock CTA (alternative to payment) */}
+          {shareUnlockFeature && (
+            <div className="mb-4 w-full max-w-xs">
+              <ShareViralButton
+                payload={{
+                  title: "OHANG",
+                  text: locale === "ko" ? "OHANG에서 내 운명을 확인해보세요!" : "Check out my destiny on OHANG!",
+                  url: "https://ohang.app",
+                }}
+                variant="cta"
+                locale={locale}
+                unlockFeature={shareUnlockFeature}
+                onShareSuccess={() => setIsShareUnlocked(true)}
+              />
+              <p className="text-center text-[10px] text-white/20 mt-1.5">
+                {locale === "ko" ? "공유하면 24시간 무료 잠금 해제" : "Share to unlock free for 24h"}
+              </p>
+              <div className="flex items-center gap-2 justify-center mt-3 mb-1">
+                <div className="h-px flex-1 bg-white/5" />
+                <span className="text-[10px] text-white/15">{locale === "ko" ? "또는" : "or"}</span>
+                <div className="h-px flex-1 bg-white/5" />
+              </div>
+            </div>
+          )}
 
           {/* CTA Button — pulsing shadow */}
           <motion.button

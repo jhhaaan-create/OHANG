@@ -85,10 +85,15 @@ export async function POST(req: Request) {
 
         const message = error instanceof Error ? error.message : 'System Error';
         const isRateLimit = message.includes('Rate Limit');
+        const isTimeout = message.includes('TIMEOUT') || message.includes('timed out');
 
         return new Response(
-            JSON.stringify({ error: message }),
-            { status: isRateLimit ? 429 : 500 }
+            JSON.stringify({
+                error: isTimeout
+                    ? 'Destiny is re-aligning. Please try again in a moment.'
+                    : message,
+            }),
+            { status: isRateLimit ? 429 : isTimeout ? 504 : 500 }
         );
     }
 }

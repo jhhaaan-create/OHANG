@@ -29,14 +29,9 @@ function checkUploadRateLimit(userId: string): boolean {
 
 export async function POST(request: Request) {
     try {
-        // 1. Authentication — REQUIRED
+        // 1. Authentication — OPTIONAL (free viral features allow anonymous uploads)
+        // Security maintained via: file type validation, 5MB limit, rate limiting, filename sanitization
         const user = await getAuthenticatedUser(request);
-        if (!user) {
-            return NextResponse.json(
-                { error: 'Authentication required.' },
-                { status: 401 }
-            );
-        }
         const userId = resolveUserId(user, request);
 
         // 2. Rate Limit (10 uploads/min per user)

@@ -63,7 +63,7 @@ export function resolveUserId(
     const realIp = req.headers.get('x-real-ip');
     if (realIp) return `anon:${realIp}`;
 
-    return `anon:unknown-${Date.now()}`;
+    return `anon:${crypto.randomUUID()}`;
 }
 
 // ── 1. Cache Key Generator (SHA-256 Deterministic Hash) ──
@@ -160,10 +160,15 @@ export async function checkRateLimit(
 // ── 4. Usage Logging ────────────────────────────────
 
 export async function logUsage(identifier: string, feature: string): Promise<void> {
-    getAdmin().from('user_usage').insert({
+    const { error } = await getAdmin().from('user_usage').insert({
         user_id: identifier,
         feature_name: feature,
-    }).then(({ error }) => {
-        if (error) console.error('Usage Log Error:', error);
     });
+
+    // FAIL-CLOSE: If usage insert fails, the rate-limit counter won't increment,
+    // allowing unlimited requests. Block to prevent bypass.
+    if (error) {
+        console.error('Usage Log Failed (fail-close):', error);
+        throw new Error('Service temporarily unavailable. Please retry in a moment.');
+    }
 }

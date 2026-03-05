@@ -35,7 +35,7 @@ export function middleware(req: NextRequest) {
 
     // 1. API Guard: Protect ALL sensitive API routes (Security Audit C-03)
     // Exemptions: /api/health (monitoring), /api/stripe/webhook (Stripe signature), /api/og (public)
-    const UNGUARDED_PATHS = ['/api/health', '/api/stripe/webhook', '/api/og', '/api/og/chemistry'];
+    const UNGUARDED_PATHS = ['/api/health', '/api/stripe/webhook', '/api/og', '/api/og/chemistry', '/api/analyze/red-flag', '/features/red-flag', '/features/couple-scan', '/features/retro-mode', '/features/celeb-match'];
     const needsGuard = pathname.startsWith('/api/') && !UNGUARDED_PATHS.some((p) => pathname.startsWith(p));
     if (needsGuard) {
         const referer = req.headers.get('referer');

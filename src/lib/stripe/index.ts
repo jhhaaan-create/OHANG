@@ -30,8 +30,9 @@ export { getStripe };
 // In Stripe Dashboard: create Products → copy Price IDs → set in .env
 export const PRICE_IDS = {
     // Subscriptions
-    pro_monthly:    process.env.STRIPE_PRICE_PRO_MONTHLY    || '',
-    destiny_lifetime: process.env.STRIPE_PRICE_DESTINY_LIFETIME || '',
+    pro_monthly:      process.env.STRIPE_PRICE_PRO_MONTHLY       || '',
+    ohang_pro_monthly: process.env.STRIPE_PRICE_OHANG_PRO_MONTHLY || '',
+    destiny_lifetime: process.env.STRIPE_PRICE_DESTINY_LIFETIME  || '',
     // One-time IAPs
     basic_onetime:  process.env.STRIPE_PRICE_BASIC_ONETIME  || '',
     red_flag:       process.env.STRIPE_PRICE_RED_FLAG       || '',
