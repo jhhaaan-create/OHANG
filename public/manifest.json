@@ -1,0 +1,10 @@
+{
+  "name": "OHANG",
+  "short_name": "OHANG",
+  "description": "What Element Are You Missing?",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#E94560",
+  "icons": []
+}

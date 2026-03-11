@@ -39,7 +39,7 @@ const RequestSchema = z.object({
             }
         },
         { message: 'Only images from verified storage providers are accepted' }
-    ).optional(),
+    ).nullish(),
 });
 
 export async function POST(req: Request) {
