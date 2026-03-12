@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { CoupleFaceScanSchema } from "@/lib/ai/schemas";
+import PaywallGate from "@/components/paywall/PaywallGate";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
@@ -220,9 +221,9 @@ function CoupleScanResult({
 }) {
     return (
         <motion.div className="space-y-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {/* Chemistry Score Ring */}
+            {/* ── TEASER (free) — Score + Person Cards ── */}
             {data.visual_chemistry_score !== undefined && (
-                <motion.div className="text-center py-4" initial={{ scale: 0.9 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                <motion.div className="text-center py-4 bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6" initial={{ scale: 0.9 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
                     <div className="relative w-32 h-32 mx-auto mb-3">
                         <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                             <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
@@ -246,11 +247,10 @@ function CoupleScanResult({
                 </motion.div>
             )}
 
-            {/* Person Cards */}
             {(data.person_a || data.person_b) && (
                 <div className="grid grid-cols-2 gap-3">
                     {[data.person_a, data.person_b].map((p, i) => p && (
-                        <div key={i} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] text-center">
+                        <div key={i} className="p-4 rounded-2xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] text-center">
                             <span className="text-lg mb-1 block">👤</span>
                             <p className="text-sm font-medium text-white/70">{p.face_archetype}</p>
                             <p className="text-[10px] text-white/30">{p.dominant_element} · {p.key_energy}</p>
@@ -259,37 +259,47 @@ function CoupleScanResult({
                 </div>
             )}
 
-            {/* Insight Sections */}
-            {[
-                { label: "Element Interaction", content: data.element_interaction },
-                { label: "Strongest Bond", content: data.strongest_bond },
-                { label: "Potential Friction", content: data.potential_friction },
-                { label: "Spouse Palace", content: data.spouse_palace_reading },
-                { label: "Together Energy", content: data.together_energy },
-            ].filter(s => s.content).map((section, i) => (
-                <motion.div
-                    key={section.label}
-                    className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + i * 0.1 }}
-                >
-                    <h4 className="text-[10px] font-semibold text-white/25 uppercase tracking-wider mb-2">{section.label}</h4>
-                    <StreamingTypewriter text={section.content ?? ""} isLoading={isStreaming} className="text-sm text-white/55 leading-relaxed" />
-                </motion.div>
-            ))}
+            {/* ── GATED — Detailed Compatibility Breakdown ── */}
+            <PaywallGate
+                tier="free"
+                requiredTier="basic"
+                featureLabel="Full Reading — $2.99"
+                cliffhangerText="Your spouse palaces show a rare [████████] alignment"
+                shareUnlockFeature="couple_scan"
+                locale="en"
+            >
+                <div className="space-y-4">
+                    {[
+                        { label: "Element Interaction", content: data.element_interaction },
+                        { label: "Strongest Bond", content: data.strongest_bond },
+                        { label: "Potential Friction", content: data.potential_friction },
+                        { label: "Spouse Palace", content: data.spouse_palace_reading },
+                        { label: "Together Energy", content: data.together_energy },
+                    ].filter(s => s.content).map((section, i) => (
+                        <motion.div
+                            key={section.label}
+                            className="p-5 rounded-2xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06]"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.15 * i }}
+                        >
+                            <h4 className="text-[10px] font-semibold text-white/25 uppercase tracking-wider mb-2">{section.label}</h4>
+                            <StreamingTypewriter text={section.content ?? ""} isLoading={isStreaming} className="text-sm text-white/55 leading-relaxed" />
+                        </motion.div>
+                    ))}
 
-            {/* Verdict */}
-            {data.verdict && (
-                <motion.div
-                    className="p-5 rounded-xl bg-pink-500/5 border border-pink-500/10 text-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                >
-                    <p className="text-base font-medium text-pink-200/80">{data.verdict}</p>
-                </motion.div>
-            )}
+                    {data.verdict && (
+                        <motion.div
+                            className="p-5 rounded-2xl bg-pink-500/5 border border-pink-500/10 text-center"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            <p className="text-base font-medium text-pink-200/80">{data.verdict}</p>
+                        </motion.div>
+                    )}
+                </div>
+            </PaywallGate>
 
             {/* Share + Reset */}
             {!isStreaming && (

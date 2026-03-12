@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import { RetroModeSchema } from "@/lib/ai/schemas";
 import { loadBirthData } from "@/lib/utils/birthDataStore";
+import PaywallGate from "@/components/paywall/PaywallGate";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
@@ -169,17 +170,16 @@ function RetroResult({
 }) {
     return (
         <motion.div className="space-y-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {/* Pairing Header */}
+            {/* ── TEASER (free) — Pairing Header + Element Story ── */}
             {data.pairing_label && (
-                <motion.div className="text-center py-4" initial={{ scale: 0.9 }} animate={{ scale: 1 }}>
+                <motion.div className="text-center py-4 bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6" initial={{ scale: 0.9 }} animate={{ scale: 1 }}>
                     <span className="text-3xl mb-2 block">{data.pairing_emoji}</span>
                     <h2 className="text-xl font-bold text-white/80">{data.pairing_label}</h2>
                 </motion.div>
             )}
 
-            {/* Element Story */}
             {data.element_story && (
-                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                <div className="p-5 rounded-2xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06]">
                     <div className="flex items-center gap-3 mb-3">
                         <span className="px-2 py-1 rounded text-[10px] font-bold bg-blue-500/10 text-blue-300">{data.element_story.your_element}</span>
                         <span className="text-white/20 text-xs">{data.element_story.interaction}</span>
@@ -189,46 +189,55 @@ function RetroResult({
                 </div>
             )}
 
-            {/* Timeline Sections */}
-            {[
-                { label: "🧲 The Attraction", content: data.the_attraction },
-                { label: "💔 The Breaking Point", content: data.the_breaking_point },
-                { label: "⏱️ The Timeline", content: data.the_timeline },
-                { label: "⚡ What They Activated", content: data.what_they_activated },
-                { label: "🔄 The Pattern", content: data.the_pattern },
-            ].filter(s => s.content).map((section, i) => (
-                <motion.div
-                    key={section.label}
-                    className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 * i }}
-                >
-                    <h4 className="text-xs font-medium text-white/30 mb-2">{section.label}</h4>
-                    <StreamingTypewriter text={section.content ?? ""} isLoading={isStreaming} className="text-sm text-white/55 leading-relaxed" />
-                </motion.div>
-            ))}
+            {/* ── GATED — Full Timeline + Closure + Growth ── */}
+            <PaywallGate
+                tier="free"
+                requiredTier="basic"
+                featureLabel="Full Reading — $1.99"
+                cliffhangerText="The pattern you keep repeating is [████████]"
+                shareUnlockFeature="retro_mode"
+                locale="en"
+            >
+                <div className="space-y-4">
+                    {[
+                        { label: "The Attraction", content: data.the_attraction },
+                        { label: "The Breaking Point", content: data.the_breaking_point },
+                        { label: "The Timeline", content: data.the_timeline },
+                        { label: "What They Activated", content: data.what_they_activated },
+                        { label: "The Pattern", content: data.the_pattern },
+                    ].filter(s => s.content).map((section, i) => (
+                        <motion.div
+                            key={section.label}
+                            className="p-5 rounded-2xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06]"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.15 * i }}
+                        >
+                            <h4 className="text-xs font-medium text-white/30 mb-2">{section.label}</h4>
+                            <StreamingTypewriter text={section.content ?? ""} isLoading={isStreaming} className="text-sm text-white/55 leading-relaxed" />
+                        </motion.div>
+                    ))}
 
-            {/* Closure */}
-            {data.closure && (
-                <motion.div
-                    className="p-5 rounded-xl bg-blue-500/5 border border-blue-500/10 text-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                >
-                    <h4 className="text-xs font-semibold text-blue-300/50 uppercase tracking-wider mb-2">Closure</h4>
-                    <p className="text-base text-blue-200/70 leading-relaxed">{data.closure}</p>
-                </motion.div>
-            )}
+                    {data.closure && (
+                        <motion.div
+                            className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 text-center"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            <h4 className="text-xs font-semibold text-blue-300/50 uppercase tracking-wider mb-2">Closure</h4>
+                            <p className="text-base text-blue-200/70 leading-relaxed">{data.closure}</p>
+                        </motion.div>
+                    )}
 
-            {/* What to Seek */}
-            {data.what_to_seek && (
-                <motion.div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h4 className="text-xs font-semibold text-emerald-300/50 uppercase tracking-wider mb-2">What To Seek Next</h4>
-                    <p className="text-sm text-white/55 leading-relaxed">{data.what_to_seek}</p>
-                </motion.div>
-            )}
+                    {data.what_to_seek && (
+                        <motion.div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/10" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <h4 className="text-xs font-semibold text-emerald-300/50 uppercase tracking-wider mb-2">What To Seek Next</h4>
+                            <p className="text-sm text-white/55 leading-relaxed">{data.what_to_seek}</p>
+                        </motion.div>
+                    )}
+                </div>
+            </PaywallGate>
 
             {/* Share + Reset */}
             {!isStreaming && (

@@ -120,7 +120,7 @@ function t(locale: "ko" | "en") {
     : {
         unlock: "Unlock your destiny",
         hookDefault: "Your critical weakness is [████████]",
-        socialProof: (n: number) => `${n.toLocaleString()} people have checked their fate`,
+        socialProof: (n: number) => `${n.toLocaleString()} readings unlocked today`,
         recommended: "Recommended",
         startTrial: "Get Started",
         cancelAnytime: "Cancel anytime · 7-day free trial",
@@ -361,7 +361,7 @@ export default function PaywallGate({
   children,
   onUpgrade,
   className = "",
-  socialProofCount = 4832,
+  socialProofCount = 12847,
   locale = "ko",
   shareUnlockFeature,
 }: PaywallGateProps) {
@@ -589,6 +589,7 @@ export default function PaywallGate({
             animate={{
               opacity: 1,
               y: 0,
+              scale: [1, 1.02, 1],
               boxShadow: [
                 `0 4px 20px ${palette.accent}30`,
                 `0 8px 40px ${palette.accent}50`,
@@ -598,6 +599,7 @@ export default function PaywallGate({
             transition={{
               opacity: { delay: 0.8, duration: 0.5 },
               y: { delay: 0.8, duration: 0.5 },
+              scale: { delay: 1.3, duration: 2, repeat: Infinity, ease: "easeInOut" },
               boxShadow: { delay: 1.3, duration: 2, repeat: Infinity, ease: "easeInOut" },
             }}
             whileHover={{ scale: 1.05 }}
@@ -613,7 +615,9 @@ export default function PaywallGate({
               transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
             />
             <Sparkles size={16} className="relative z-10" />
-            <span className="relative z-10">{text.viewPlans}</span>
+            <span className="relative z-10">
+              {featureLabel ? `Unlock ${featureLabel}` : text.viewPlans}
+            </span>
             <ArrowRight
               size={16}
               className="relative z-10 transition-transform group-hover:translate-x-1"

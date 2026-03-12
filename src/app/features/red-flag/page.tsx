@@ -9,11 +9,19 @@ import Link from "next/link";
 import { RedFlagSchema } from "@/lib/ai/schemas";
 import { loadBirthData } from "@/lib/utils/birthDataStore";
 import RedFlagResult from "@/components/red-flag/organisms/RedFlagResult";
+import PaywallGate from "@/components/paywall/PaywallGate";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { triggerElementalHaptic } from "@/lib/utils/haptic";
 import { buildShareUrl } from "@/lib/sharing/shareUtils";
 import type { ElementType } from "@/lib/constants/archetypes";
+
+const RISK_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
+    GREEN: { bg: "#22c55e12", text: "#4ade80", ring: "#22c55e" },
+    YELLOW: { bg: "#eab30812", text: "#fbbf24", ring: "#eab308" },
+    RED: { bg: "#ef444412", text: "#f87171", ring: "#ef4444" },
+    RUN: { bg: "#f4395e12", text: "#fb7185", ring: "#f43f5e" },
+};
 
 type Step = "input" | "loading" | "paywall" | "result";
 
@@ -154,11 +162,77 @@ export default function RedFlagPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                     >
-                        <RedFlagResult
-                            data={object as Partial<import("@/lib/ai/schemas").RedFlag>}
-                            isStreaming={isLoading}
+                        {/* ── TEASER (free) — Risk Score + Headline ── */}
+                        {object.risk_level && (
+                            <motion.div
+                                className="text-center py-6 bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] rounded-2xl p-6"
+                                initial={{ scale: 0.9 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring" }}
+                            >
+                                <div className="relative w-28 h-28 mx-auto mb-4">
+                                    <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                                        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+                                        <motion.circle
+                                            cx="50" cy="50" r="42" fill="none"
+                                            stroke={RISK_COLORS[object.risk_level ?? "GREEN"]?.ring ?? "#22c55e"}
+                                            strokeWidth="5"
+                                            strokeLinecap="round"
+                                            strokeDasharray={`${2 * Math.PI * 42}`}
+                                            initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
+                                            animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - (object.risk_score ?? 0) / 100) }}
+                                            transition={{ duration: 1.5, delay: 0.3 }}
+                                        />
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <span className="text-2xl font-bold" style={{ color: RISK_COLORS[object.risk_level ?? "GREEN"]?.text ?? "#4ade80" }}>
+                                            {object.risk_score}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span
+                                    className="inline-block px-4 py-1.5 rounded-full text-sm font-bold tracking-wide"
+                                    style={{
+                                        backgroundColor: RISK_COLORS[object.risk_level ?? "GREEN"]?.bg,
+                                        color: RISK_COLORS[object.risk_level ?? "GREEN"]?.text,
+                                    }}
+                                >
+                                    {object.risk_level}
+                                </span>
+                                {object.headline && (
+                                    <p className="text-base text-white/70 mt-3 px-4">{object.headline}</p>
+                                )}
+                            </motion.div>
+                        )}
+
+                        {/* Element Clash (free teaser) */}
+                        {object.element_clash_summary && (
+                            <motion.div
+                                className="p-5 rounded-2xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06]"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <h4 className="text-[10px] font-semibold text-white/25 uppercase tracking-wider mb-2">Element Clash</h4>
+                                <p className="text-sm text-white/55 leading-relaxed">{object.element_clash_summary}</p>
+                            </motion.div>
+                        )}
+
+                        {/* ── GATED — Full Flag Analysis ── */}
+                        <PaywallGate
+                            tier="free"
+                            requiredTier="basic"
+                            featureLabel="Full Reading — $2.99"
+                            cliffhangerText="The 3rd flag reveals a [████████] pattern"
+                            shareUnlockFeature="red_flag"
                             locale="en"
-                        />
+                        >
+                            <RedFlagResult
+                                data={object as Partial<import("@/lib/ai/schemas").RedFlag>}
+                                isStreaming={isLoading}
+                                locale="en"
+                            />
+                        </PaywallGate>
 
                         {!isLoading && (
                             <div className="flex flex-col items-center gap-3 pt-4">
