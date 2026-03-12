@@ -23,7 +23,7 @@ export default function BottomCTA() {
                     Ready to decode your destiny?
                 </h2>
                 <p className="text-sm text-white/30 mb-8">
-                    Free archetype analysis \u00b7 No sign-up required
+                    Free archetype analysis · No sign-up required
                 </p>
                 <Link href="/analyze">
                     <motion.button

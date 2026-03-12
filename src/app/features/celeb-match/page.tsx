@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Upload, ArrowLeft, Sparkles } from "lucide-react";
@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { CelebMatchSchema } from "@/lib/ai/schemas";
+import { loadBirthData } from "@/lib/utils/birthDataStore";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
@@ -25,6 +26,15 @@ export default function CelebMatchPage() {
     const [showSaju, setShowSaju] = useState(false);
     const [sajuData, setSajuData] = useState({ year: "", month: "", day: "", hour: "", minute: "", gender: "male" });
     const [tone, setTone] = useState<"savage" | "balanced" | "gentle">("balanced");
+
+    // Pre-fill saju from sessionStorage + auto-expand if data exists
+    useEffect(() => {
+        const stored = loadBirthData();
+        if (stored && stored.year) {
+            setSajuData(prev => ({ ...prev, ...stored }));
+            setShowSaju(true);
+        }
+    }, []);
 
     const { object, submit, isLoading, error } = useObject({
         api: "/api/analyze/celeb-match",

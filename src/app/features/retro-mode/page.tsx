@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Rewind, ArrowLeft, Zap } from "lucide-react";
 import Link from "next/link";
 
 import { RetroModeSchema } from "@/lib/ai/schemas";
+import { loadBirthData } from "@/lib/utils/birthDataStore";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
@@ -20,6 +21,12 @@ export default function RetroModePage() {
     const [myData, setMyData] = useState({ year: "", month: "", day: "", hour: "", minute: "", gender: "male" });
     const [exData, setExData] = useState({ year: "", month: "", day: "", hour: "", minute: "", gender: "female" });
     const [tone, setTone] = useState<"savage" | "balanced" | "gentle">("savage");
+
+    // Pre-fill from sessionStorage
+    useEffect(() => {
+        const stored = loadBirthData();
+        if (stored) setMyData(prev => ({ ...prev, ...stored }));
+    }, []);
 
     const { object, submit, isLoading, error } = useObject({
         api: "/api/analyze/retro-mode",

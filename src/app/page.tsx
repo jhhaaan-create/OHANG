@@ -1,6 +1,7 @@
 // src/app/page.tsx
 import type { Metadata } from "next";
 import HeroSection from "@/components/landing/HeroSection";
+import LoreSection from "@/components/landing/LoreSection";
 import LiveSocialTicker from "@/components/landing/LiveSocialTicker";
 import CliffhangerCards from "@/components/landing/CliffhangerCards";
 import BottomCTA from "@/components/landing/BottomCTA";
@@ -58,6 +59,7 @@ export default function LandingPage() {
             {/* Content stack */}
             <div className="relative z-10">
                 <HeroSection />
+                <LoreSection />
                 <LiveSocialTicker />
                 <CliffhangerCards />
                 <BottomCTA />

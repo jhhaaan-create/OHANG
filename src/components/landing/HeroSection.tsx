@@ -239,7 +239,7 @@ export default function HeroSection() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1 }}
                 >
-                    Free \u00b7 No sign-up \u00b7 30 second analysis
+                    Free · No sign-up · 30 second analysis
                 </motion.p>
             </div>
         </section>

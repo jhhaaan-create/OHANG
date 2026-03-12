@@ -51,8 +51,8 @@ const PAID_FEATURES: FeatureCard[] = [
         title: "Red Flag Radar",
         desc: "Detect hidden relationship patterns before they surface",
         color: "#ef4444",
-        badge: "HOT",
-        badgeColor: "#ef4444",
+        badge: "$2.99",
+        badgeColor: "#f59e0b",
         price: "$2.99",
     },
     {
@@ -61,8 +61,8 @@ const PAID_FEATURES: FeatureCard[] = [
         title: "Couple Face Scan",
         desc: "Upload two photos to reveal visual chemistry scores",
         color: "#ec4899",
-        badge: "HOT",
-        badgeColor: "#ec4899",
+        badge: "$2.99",
+        badgeColor: "#f59e0b",
         price: "$2.99",
     },
     {
@@ -71,6 +71,8 @@ const PAID_FEATURES: FeatureCard[] = [
         title: "Retro Mode",
         desc: "Understand why it ended and what your ex activated in you",
         color: "#3b82f6",
+        badge: "$1.99",
+        badgeColor: "#f59e0b",
         price: "$1.99",
     },
 ];

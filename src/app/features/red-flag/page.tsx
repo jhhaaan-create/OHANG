@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Zap, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { RedFlagSchema } from "@/lib/ai/schemas";
+import { loadBirthData } from "@/lib/utils/birthDataStore";
 import RedFlagResult from "@/components/red-flag/organisms/RedFlagResult";
 import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
@@ -24,6 +25,12 @@ export default function RedFlagPage() {
     const [myData, setMyData] = useState({ year: "", month: "", day: "", hour: "", minute: "", gender: "male" });
     const [partnerData, setPartnerData] = useState({ year: "", month: "", day: "", hour: "", minute: "", gender: "female" });
     const [tone, setTone] = useState<"savage" | "balanced" | "gentle">("balanced");
+
+    // Pre-fill from sessionStorage
+    useEffect(() => {
+        const stored = loadBirthData();
+        if (stored) setMyData(prev => ({ ...prev, ...stored }));
+    }, []);
 
     // ── AI Streaming ──
     const { object, submit, isLoading, error } = useObject({

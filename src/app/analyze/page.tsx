@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { Suspense, useState, useRef, useMemo, useEffect } from 'react';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Zap, Eye } from 'lucide-react';
@@ -14,13 +15,40 @@ import { useTheme } from '@/lib/context/ThemeContext';
 import { ambientSound } from '@/lib/audio/ambient';
 import { triggerElementalHaptic } from '@/lib/utils/haptic';
 import { ElementType } from '@/lib/constants/archetypes';
+import { saveBirthData } from '@/lib/utils/birthDataStore';
 
 export default function AnalyzePage() {
+    return (
+        <Suspense>
+            <AnalyzePageInner />
+        </Suspense>
+    );
+}
+
+function AnalyzePageInner() {
     const [step, setStep] = useState<'input' | 'ritual' | 'result'>('input');
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const searchParams = useSearchParams();
 
     const { setElement } = useTheme();
+
+    // Persist birth data from URL params to sessionStorage
+    useEffect(() => {
+        const year = searchParams.get('year') ?? '';
+        const month = searchParams.get('month') ?? '';
+        const day = searchParams.get('day') ?? '';
+        if (year && month && day) {
+            saveBirthData({
+                year,
+                month,
+                day,
+                hour: searchParams.get('hour') ?? '',
+                minute: searchParams.get('minute') ?? '',
+                gender: searchParams.get('gender') ?? 'male',
+            });
+        }
+    }, [searchParams]);
 
     // ── AI Hooks (Streaming) ────────────────────────────
     const { object, submit, isLoading } = useObject({
@@ -79,6 +107,17 @@ export default function AnalyzePage() {
             gender: formData.get('gender'),
             imageUrl: imageUrl,
         };
+
+        // Save to sessionStorage for feature pages
+        saveBirthData({
+            year: String(data.year),
+            month: String(data.month),
+            day: String(data.day),
+            hour: data.hour ? String(data.hour) : '',
+            minute: data.minute ? String(data.minute) : '',
+            gender: String(data.gender ?? 'male'),
+        });
+
         submit(data);
     };
 
