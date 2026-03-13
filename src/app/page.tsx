@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Your Face. Your Birth. Your Truth. | OHANG",
         description:
-            "518,400 unique destiny profiles. AI-powered K-Saju analysis + face reading. Discover your archetype in 30 seconds.",
+            "518,400 unique destiny profiles. AI-powered Cosmic Blueprint analysis + Face Frequency Scan. Discover your archetype in 30 seconds.",
         url: BASE_URL,
         siteName: "OHANG",
         images: [

@@ -129,7 +129,7 @@ export default function AnalyzePageExample() {
             Discover Your Element
           </h1>
           <p className="text-white/50 text-center mb-8 max-w-xs">
-            Enter your birth details and let the Five Elements reveal who you
+            Enter your birth details and let the Five Forces reveal who you
             truly are.
           </p>
           {/* Your birth date form goes here */}

@@ -94,7 +94,7 @@ export default function RateLimitModal({
             </h3>
 
             <p className="text-sm text-white/50 mb-6">
-              The Five Elements need a moment to realign. Your next reading will
+              The Five Forces need a moment to realign. Your next reading will
               be ready soon.
             </p>
 

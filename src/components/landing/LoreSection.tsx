@@ -75,7 +75,7 @@ export default function LoreSection() {
                         <span className="text-gradient-ohang">Meet the 5 Energies.</span>
                     </h2>
                     <p className="text-sm text-white/30 max-w-md mx-auto">
-                        Korean Saju maps your soul to five primal forces — not constellations.
+                        Your Cosmic Blueprint maps your soul to five primal forces — not constellations.
                     </p>
                 </motion.div>
 

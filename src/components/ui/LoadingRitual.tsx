@@ -22,7 +22,7 @@ const RITUAL_CONFIG = {
         messages: [
             "Connecting to Universal Server...",
             "Calculating Solar Terms...",
-            "Aligning Time Pillars...",
+            "Aligning Time Frequencies...",
         ]
     },
     saju_decoding: {
@@ -30,7 +30,7 @@ const RITUAL_CONFIG = {
         color: 'text-green-400',
         messages: [
             "Decoding Internal Blueprint...",
-            "Identifying Core Elements...",
+            "Identifying Core Energies...",
             "Measuring Energy Balance...",
         ]
     },

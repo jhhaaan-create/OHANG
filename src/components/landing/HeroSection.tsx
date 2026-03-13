@@ -20,7 +20,7 @@ const TYPEWRITER_LINES = [
     "Decoding your soul blueprint...",
     "Scanning elemental energy signature...",
     "Analyzing 518,400 destiny combinations...",
-    "Reading the Four Pillars of your fate...",
+    "Reading the Four Frequencies of your fate...",
     "Mapping your void element...",
 ];
 
@@ -29,6 +29,7 @@ export default function HeroSection() {
     const fileRef = useRef<HTMLInputElement>(null);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [unknownTime, setUnknownTime] = useState(true);
 
     // ── Typewriter State ──
     const [lineIndex, setLineIndex] = useState(0);
@@ -89,12 +90,16 @@ export default function HeroSection() {
         const year = fd.get("year") as string;
         const month = fd.get("month") as string;
         const day = fd.get("day") as string;
+        const hour = fd.get("hour") as string;
+        const minute = fd.get("minute") as string;
         if (year) params.set("year", year);
         if (month) params.set("month", month);
         if (day) params.set("day", day);
+        if (!unknownTime && hour) params.set("hour", hour);
+        if (!unknownTime && minute) params.set("minute", minute);
         if (imageUrl) params.set("imageUrl", imageUrl);
         router.push(`/analyze?${params.toString()}`);
-    }, [router, imageUrl]);
+    }, [router, imageUrl, unknownTime]);
 
     return (
         <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-5 pt-safe-top">
@@ -117,7 +122,7 @@ export default function HeroSection() {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-violet-400" />
                     </span>
-                    <span className="text-[11px] text-white/40 tracking-wide">K-Saju + AI Vision</span>
+                    <span className="text-[11px] text-white/40 tracking-wide">Cosmic Blueprint Engine</span>
                 </motion.div>
 
                 {/* Hook Phrase - ULTIMATE COPY APPLIED */}
@@ -195,38 +200,102 @@ export default function HeroSection() {
                         />
                     </div>
 
-                    {/* Selfie Upload Drop Zone */}
-                    <div
-                        onClick={() => fileRef.current?.click()}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-white/[0.08] bg-white/[0.02] cursor-pointer hover:bg-white/[0.04] hover:border-white/[0.12] transition-all group"
-                    >
-                        <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-                            {imageUrl ? (
-                                <Camera size={16} className="text-emerald-400" />
-                            ) : isUploading ? (
-                                <motion.div
-                                    className="w-4 h-4 border-2 border-violet-400/30 border-t-violet-400 rounded-full"
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                                />
-                            ) : (
-                                <Upload size={16} className="text-white/25 group-hover:text-white/40 transition-colors" />
-                            )}
-                        </div>
-                        <div className="text-left flex-1 min-w-0">
-                            <span className="text-xs text-white/40 group-hover:text-white/55 transition-colors">
-                                {imageUrl ? "Selfie uploaded \u2713" : "Add selfie for Face Vision (optional)"}
-                            </span>
-                            <p className="text-[10px] text-white/15 mt-0.5 truncate">AI compensates for missing birth time</p>
-                        </div>
+                    {/* Unknown Time Checkbox */}
+                    <label className="flex items-center gap-2 cursor-pointer select-none -mt-1">
                         <input
-                            ref={fileRef}
-                            type="file"
-                            accept="image/*"
-                            hidden
-                            onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
+                            type="checkbox"
+                            checked={unknownTime}
+                            onChange={(e) => setUnknownTime(e.target.checked)}
+                            className="w-3.5 h-3.5 rounded border-white/20 bg-white/5 text-violet-500 focus:ring-violet-500/30 focus:ring-offset-0"
                         />
-                    </div>
+                        <span className="text-xs text-violet-400">I don&apos;t know my exact birth time</span>
+                    </label>
+
+                    {/* Hour/Minute Inputs (shown when time is known) */}
+                    <AnimatePresence>
+                        {!unknownTime && (
+                            <motion.div
+                                className="flex gap-2"
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <input
+                                    name="hour"
+                                    type="number"
+                                    placeholder="Hour (0-23)"
+                                    min={0}
+                                    max={23}
+                                    className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-3 text-center text-sm text-white placeholder:text-white/20 focus:border-violet-500/40 focus:outline-none focus:ring-1 focus:ring-violet-500/20 transition-all"
+                                />
+                                <input
+                                    name="minute"
+                                    type="number"
+                                    placeholder="Min (0-59)"
+                                    min={0}
+                                    max={59}
+                                    className="w-28 bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-3 text-center text-sm text-white placeholder:text-white/20 focus:border-violet-500/40 focus:outline-none focus:ring-1 focus:ring-violet-500/20 transition-all"
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Face Frequency Upload Zone (expanded when time unknown) */}
+                    <AnimatePresence>
+                        {unknownTime && (
+                            <motion.div
+                                onClick={() => fileRef.current?.click()}
+                                className="relative flex flex-col items-center gap-3 px-5 py-5 rounded-xl border-2 border-dashed cursor-pointer hover:bg-violet-500/[0.04] transition-all group overflow-hidden"
+                                style={{
+                                    borderColor: imageUrl ? "rgba(52,211,153,0.3)" : undefined,
+                                }}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{
+                                    opacity: 1,
+                                    height: "auto",
+                                    borderColor: imageUrl
+                                        ? "rgba(52,211,153,0.3)"
+                                        : ["rgba(139,92,246,0.25)", "rgba(139,92,246,0.5)", "rgba(139,92,246,0.25)"],
+                                }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{
+                                    borderColor: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                    opacity: { duration: 0.3 },
+                                    height: { duration: 0.3 },
+                                }}
+                            >
+                                <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
+                                    {imageUrl ? (
+                                        <Camera size={18} className="text-emerald-400" />
+                                    ) : isUploading ? (
+                                        <motion.div
+                                            className="w-5 h-5 border-2 border-violet-400/30 border-t-violet-400 rounded-full"
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                                        />
+                                    ) : (
+                                        <Camera size={18} className="text-violet-400" />
+                                    )}
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-xs font-medium text-violet-300/80">
+                                        {imageUrl ? "Face uploaded \u2713" : "Your face holds the missing frequency"}
+                                    </p>
+                                    <p className="text-[10px] text-white/20 mt-0.5">
+                                        {imageUrl ? "AI will reconstruct your lost timestamp" : "AI reconstructs your lost timestamp from bone architecture"}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <input
+                        ref={fileRef}
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
+                    />
 
                     {/* Submit CTA — UPDATED COPY */}
                     <GlowCTA label="Scan My Face to Decode Timeline" icon={<Zap size={16} className="fill-current" />} />

@@ -12,14 +12,14 @@ export const defaultMetadata: Metadata = {
     template: "%s | OHANG",
   },
   description:
-    "Discover your elemental identity through Korean Saju analysis and AI-powered face reading. 518,400 unique profiles. Find your missing piece.",
+    "Discover your elemental identity through Cosmic Blueprint analysis and AI-powered Face Frequency Scan. 518,400 unique profiles. Find your missing piece.",
   keywords: [
-    "saju",
+    "cosmic blueprint",
     "korean astrology",
-    "five elements",
+    "five forces",
     "personality test",
-    "compatibility",
-    "face reading",
+    "chemistry equation",
+    "face frequency scan",
     "gwansang",
     "relationship",
     "ohang",
@@ -33,7 +33,7 @@ export const defaultMetadata: Metadata = {
     siteName: "OHANG",
     title: "OHANG — Five Element Intelligence",
     description:
-      "Discover your elemental identity through Korean Saju analysis and AI-powered face reading.",
+      "Discover your elemental identity through Cosmic Blueprint analysis and AI-powered Face Frequency Scan.",
     images: [
       {
         url: `${BASE_URL}/api/og?mode=default`,
@@ -47,7 +47,7 @@ export const defaultMetadata: Metadata = {
     card: "summary_large_image",
     title: "OHANG — Five Element Intelligence",
     description:
-      "Discover your elemental identity. 518,400 unique profiles based on Korean Saju.",
+      "Discover your elemental identity. 518,400 unique profiles via Cosmic Blueprint.",
     images: [`${BASE_URL}/api/og?mode=default`],
   },
   robots: {
@@ -87,7 +87,7 @@ export function profileMetadata({
   const title = name
     ? `${name} is ${archetype}`
     : `You are ${archetype}`;
-  const description = `${element} Element · Discover what your birth chart reveals about your deepest patterns, blind spots, and superpowers.`;
+  const description = `${element} Energy · Discover what your Cosmic Blueprint reveals about your deepest patterns, blind spots, and superpowers.`;
   const ogParams = new URLSearchParams({
     mode: "profile",
     archetype,
@@ -128,7 +128,7 @@ export function chemistryMetadata({
   score: number;
 }): Metadata {
   const title = `${archetypeA} × ${archetypeB}: ${score}% Chemistry`;
-  const description = `Elemental compatibility analysis. See how ${archetypeA} and ${archetypeB} interact through the Five Elements.`;
+  const description = `Elemental chemistry equation. See how ${archetypeA} and ${archetypeB} interact through the Five Forces.`;
   const ogUrl = `${BASE_URL}/api/og?mode=chemistry&archetype=${encodeURIComponent(archetypeA)}&partner=${encodeURIComponent(archetypeB)}&element=${encodeURIComponent(element)}&score=${score}`;
 
   return {
@@ -157,7 +157,7 @@ export function appJsonLd() {
     applicationCategory: "EntertainmentApplication",
     operatingSystem: "Web",
     description:
-      "AI-powered personality analysis based on Korean Five Element theory (Saju). Discover your archetype, compatibility, and daily energy.",
+      "AI-powered personality analysis based on Cosmic Blueprint theory. Discover your archetype, chemistry equation, and daily energy.",
     url: BASE_URL,
     inLanguage: ["en", "ko"],
     offers: [
@@ -171,7 +171,7 @@ export function appJsonLd() {
         "@type": "Offer",
         price: "7.99",
         priceCurrency: "USD",
-        description: "OHANG Pro — 3 tone modes, unlimited compatibility, face reading",
+        description: "OHANG Pro — 3 tone modes, unlimited chemistry equations, Face Frequency Scan",
       },
       {
         "@type": "Offer",
@@ -220,7 +220,7 @@ export function resultJsonLd({
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       name: `${archetype} Soul Blueprint`,
-      description: `${element} Element personality profile generated through AI-powered Saju analysis`,
+      description: `${element} Energy personality profile generated through AI-powered Cosmic Blueprint analysis`,
       creator: { "@type": "Organization", name: "OHANG" },
       genre: "Entertainment",
       inLanguage: "en",

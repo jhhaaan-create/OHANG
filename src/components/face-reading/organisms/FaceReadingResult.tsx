@@ -56,7 +56,7 @@ export default function FaceReadingResult({
                     <p className="text-xs text-amber-300/80">
                         {locale === "ko"
                             ? "이미지 분석에 실패하여 사주 데이터 기반 추정 결과입니다."
-                            : "Image analysis unavailable. This is a Saju-based estimation."}
+                            : "Image analysis unavailable. This is a Cosmic Blueprint-based estimation."}
                     </p>
                 </motion.div>
             )}
@@ -236,7 +236,7 @@ export default function FaceReadingResult({
                     transition={{ delay: 1.1 }}
                 >
                     <h3 className="text-xs font-medium text-white/30 mb-2">
-                        {locale === "ko" ? "사주 × 관상 교차 분석" : "Saju × Face Cross Analysis"}
+                        {locale === "ko" ? "사주 × 관상 교차 분석" : "Blueprint × Face Cross Analysis"}
                     </h3>
                     <p className="text-sm text-white/60 leading-relaxed">{data.saju_cross_analysis}</p>
                 </motion.div>

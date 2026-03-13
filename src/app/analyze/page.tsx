@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Zap, Eye } from 'lucide-react';
+import { Upload, Zap, Eye, Camera } from 'lucide-react';
 import { DualModalProfileSchema } from '@/lib/ai/schemas';
 import { LoadingRitual, RitualState } from '@/components/ui/LoadingRitual'; // Import Updated Component
 import { ResultCard } from '@/components/analyze/ResultCard';
@@ -159,8 +159,8 @@ function AnalyzePageInner() {
                                 <input name="minute" type="number" placeholder="Min (0-59)" className="bg-white/5 border-white/10 rounded-lg p-3 text-center" />
                             </div>
                             <p className="text-xs text-white/30 -mt-2 px-1">
-                                Don&apos;t know your birth time? No problem — we analyze 3 Pillars (Year/Month/Day) instead of 4.
-                                Adding a <span className="text-white/50 font-medium">Face Photo below</span> lets our Vision AI compensate for the missing Hour pillar by reading your facial element energy.
+                                Don&apos;t know your birth timestamp? No problem — we analyze 3 Frequencies (Year/Month/Day) instead of 4.
+                                Adding a <span className="text-white/50 font-medium">Face Photo below</span> lets our Vision AI reconstruct your lost timestamp from facial energy architecture.
                             </p>
                             <select name="gender" className="w-full bg-white/5 border-white/10 rounded-lg p-3 text-white">
                                 <option value="male">Male</option>
@@ -195,7 +195,56 @@ function AnalyzePageInner() {
                 {(step === 'result' || (step === 'ritual' && object)) && object && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 flex flex-col items-center">
                         <ResultCard data={object} />
-                        <button onClick={() => window.location.reload()} className="mt-8 py-3 px-6 rounded-full border border-white/10 hover:bg-white/5 text-sm text-white/50 hover:text-white transition-colors">
+
+                        {/* Share Energy Profile Button */}
+                        {!isLoading && (() => {
+                            const o = object as Record<string, Record<string, unknown> | unknown[] | undefined>;
+                            const uid = o.user_identity as Record<string, string> | undefined;
+                            const bp = o.internal_blueprint as Record<string, string> | undefined;
+                            const ga = o.growth_advice as Array<Record<string, string>> | undefined;
+                            if (!uid?.core_archetype || !bp?.the_core) return null;
+                            return true;
+                        })() && (
+                            <motion.button
+                                onClick={async () => {
+                                    const o = object as Record<string, Record<string, unknown> | unknown[] | undefined>;
+                                    const uid = o.user_identity as Record<string, string> | undefined;
+                                    const bp = o.internal_blueprint as Record<string, string> | undefined;
+                                    const ga = o.growth_advice as Array<Record<string, string>> | undefined;
+                                    const params = new URLSearchParams({
+                                        archetype: uid?.core_archetype ?? "",
+                                        element: bp?.the_core ?? "",
+                                        ...(ga?.[0]?.content && { line1: ga[0].content.slice(0, 80) }),
+                                        ...(ga?.[1]?.content && { line2: ga[1].content.slice(0, 80) }),
+                                        ...(ga?.[2]?.content && { line3: ga[2].content.slice(0, 80) }),
+                                    });
+                                    const url = `/api/og/profile?${params.toString()}`;
+                                    try {
+                                        const res = await fetch(url);
+                                        const blob = await res.blob();
+                                        const file = new File([blob], "ohang-profile.png", { type: "image/png" });
+                                        if (navigator.share && navigator.canShare?.({ files: [file] })) {
+                                            await navigator.share({ files: [file], title: "My OHANG Energy Profile", text: "What Energy Are You Missing?" });
+                                        } else {
+                                            const a = document.createElement("a");
+                                            a.href = URL.createObjectURL(blob);
+                                            a.download = "ohang-profile.png";
+                                            a.click();
+                                            URL.revokeObjectURL(a.href);
+                                        }
+                                    } catch { /* user cancelled share */ }
+                                }}
+                                className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm bg-gradient-to-r from-violet-600/80 to-fuchsia-600/80 text-white border border-violet-500/20 shadow-lg shadow-violet-500/10 hover:brightness-110 active:scale-[0.97] transition-all"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                            >
+                                <Camera size={16} />
+                                Share My Energy Profile
+                            </motion.button>
+                        )}
+
+                        <button onClick={() => window.location.reload()} className="mt-4 py-3 px-6 rounded-full border border-white/10 hover:bg-white/5 text-sm text-white/50 hover:text-white transition-colors">
                             Analyze Another Soul
                         </button>
                     </motion.div>

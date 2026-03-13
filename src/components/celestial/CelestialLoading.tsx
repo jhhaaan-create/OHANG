@@ -37,7 +37,7 @@ interface Phase {
 
 const PHASES: Phase[] = [
   { id: "gathering",  duration: 1200, text: "Reading your energy\u2026" },
-  { id: "aligning",   duration: 1500, text: "Aligning the Five Elements\u2026" },
+  { id: "aligning",   duration: 1500, text: "Aligning the Five Forces\u2026" },
   { id: "computing",  duration: 1800, text: "Searching 518,400 blueprints\u2026" },
   { id: "revealing",  duration: 800,  text: "The gates of destiny are opening\u2026" },
 ];

@@ -102,7 +102,7 @@ export default function FeaturesPage() {
             <div className="container mx-auto px-4 py-10 max-w-2xl">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-white/90 mb-2">Features</h1>
-                    <p className="text-sm text-white/35">Ancient K-Saju wisdom meets AI vision analysis</p>
+                    <p className="text-sm text-white/35">Ancient Cosmic Blueprint wisdom meets AI vision analysis</p>
                 </header>
 
                 {/* ── Free Viral Hooks (Top) ── */}

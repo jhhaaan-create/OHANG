@@ -80,7 +80,7 @@ const PRICING_TIERS: PricingTier[] = [
       { ko: "모든 Basic 기능", en: "All Basic features" },
       { ko: "3가지 톤 모드", en: "3 tone modes: Savage · Balanced · Gentle" },
       { ko: "무제한 궁합 분석", en: "Unlimited compatibility" },
-      { ko: "관상 + 사주 이중 분석", en: "Face + Saju dual analysis" },
+      { ko: "관상 + 사주 이중 분석", en: "Face + Cosmic Blueprint dual analysis" },
     ],
   },
   {

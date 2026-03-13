@@ -57,7 +57,7 @@ const TIERS: PricingTier[] = [
             "Full personality analysis",
             "3 tone modes: Savage \u00b7 Balanced \u00b7 Gentle",
             "Unlimited compatibility readings",
-            "Face + Saju dual analysis",
+            "Face + Cosmic Blueprint dual analysis",
             "Red Flag Radar included",
         ],
         ctaLabel: "Start OHANG+",
