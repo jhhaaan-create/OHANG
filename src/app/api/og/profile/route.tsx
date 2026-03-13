@@ -26,47 +26,30 @@ export async function GET(req: NextRequest) {
     (
       <div
         style={{
-          width: 1080,
-          height: 1350,
+          width: "100%",
+          height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#000000",
           fontFamily: "sans-serif",
-          position: "relative",
-          overflow: "hidden",
         }}
       >
-        {/* Radial gradient top glow */}
+        {/* Username */}
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 400,
-            background: `radial-gradient(ellipse 80% 100% at 50% 0%, ${color}30, transparent)`,
             display: "flex",
+            fontSize: 20,
+            color: "rgba(255,255,255,0.3)",
+            letterSpacing: 4,
+            textTransform: "uppercase",
+            marginBottom: 20,
+            minHeight: 28,
           }}
-        />
-
-        {/* Username (optional) */}
-        {username && (
-          <div
-            style={{
-              position: "absolute",
-              top: 80,
-              display: "flex",
-              fontSize: 20,
-              color: "rgba(255,255,255,0.3)",
-              letterSpacing: 4,
-              textTransform: "uppercase",
-            }}
-          >
-            {username}
-          </div>
-        )}
+        >
+          {username || ""}
+        </div>
 
         {/* Archetype Name */}
         <div
@@ -77,7 +60,6 @@ export async function GET(req: NextRequest) {
             color: "#FFFFFF",
             letterSpacing: 3,
             textTransform: "uppercase",
-            marginTop: username ? 60 : 0,
           }}
         >
           {archetype.toUpperCase()}
@@ -103,13 +85,14 @@ export async function GET(req: NextRequest) {
           />
           <div
             style={{
+              display: "flex",
               fontSize: 24,
               color: color,
               fontWeight: 600,
               letterSpacing: 2,
             }}
           >
-            Core Frequency: {element}
+            {`Core Frequency: ${element}`}
           </div>
         </div>
 
@@ -124,51 +107,31 @@ export async function GET(req: NextRequest) {
             maxWidth: 800,
           }}
         >
-          {[line1, line2, line3].filter(Boolean).map((line, i) => (
-            <div
-              key={i}
-              style={{
-                fontSize: 22,
-                color: "rgba(255,255,255,0.6)",
-                fontStyle: "italic",
-                textAlign: "center",
-                lineHeight: 1.5,
-                display: "flex",
-              }}
-            >
-              &ldquo;{line}&rdquo;
-            </div>
-          ))}
+          <div style={{ display: "flex", fontSize: 22, color: "rgba(255,255,255,0.6)", fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
+            {line1 ? `\u201C${line1}\u201D` : ""}
+          </div>
+          <div style={{ display: "flex", fontSize: 22, color: "rgba(255,255,255,0.6)", fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
+            {line2 ? `\u201C${line2}\u201D` : ""}
+          </div>
+          <div style={{ display: "flex", fontSize: 22, color: "rgba(255,255,255,0.6)", fontStyle: "italic", textAlign: "center", lineHeight: 1.5 }}>
+            {line3 ? `\u201C${line3}\u201D` : ""}
+          </div>
         </div>
 
-        {/* Bottom branding */}
+        {/* Branding */}
         <div
           style={{
-            position: "absolute",
-            bottom: 80,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             gap: 8,
+            marginTop: 100,
           }}
         >
-          <div
-            style={{
-              fontSize: 18,
-              color: "rgba(255,255,255,0.15)",
-              letterSpacing: 3,
-              display: "flex",
-            }}
-          >
+          <div style={{ display: "flex", fontSize: 18, color: "rgba(255,255,255,0.15)", letterSpacing: 3 }}>
             ohang.app
           </div>
-          <div
-            style={{
-              fontSize: 14,
-              color: "rgba(255,255,255,0.1)",
-              display: "flex",
-            }}
-          >
+          <div style={{ display: "flex", fontSize: 14, color: "rgba(255,255,255,0.1)" }}>
             What Energy Are You Missing?
           </div>
         </div>
