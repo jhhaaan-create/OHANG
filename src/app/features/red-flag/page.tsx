@@ -14,6 +14,7 @@ import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { triggerElementalHaptic } from "@/lib/utils/haptic";
 import { buildShareUrl } from "@/lib/sharing/shareUtils";
+import SaveToVaultButton from "@/components/ui/SaveToVaultButton";
 import type { ElementType } from "@/lib/constants/archetypes";
 
 const RISK_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
@@ -237,6 +238,15 @@ export default function RedFlagPage() {
                         {!isLoading && (
                             <div className="flex flex-col items-center gap-3 pt-4">
                                 <ShareViralButton payload={sharePayload} variant="cta" />
+                                <SaveToVaultButton
+                                    birthData={{
+                                        year: Number(partnerData.year),
+                                        month: Number(partnerData.month),
+                                        day: Number(partnerData.day),
+                                    }}
+                                    dominantEnergy="Fire"
+                                    archetype={object?.headline ?? "Red Flag Target"}
+                                />
                                 <button
                                     onClick={() => { setStep("input"); }}
                                     className="text-sm text-white/30 hover:text-white/50 transition-colors"

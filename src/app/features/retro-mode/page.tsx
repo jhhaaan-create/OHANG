@@ -13,6 +13,7 @@ import CelestialLoading from "@/components/celestial/CelestialLoading";
 import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
 import { triggerElementalHaptic } from "@/lib/utils/haptic";
+import SaveToVaultButton from "@/components/ui/SaveToVaultButton";
 import type { ElementType } from "@/lib/constants/archetypes";
 
 type Step = "input" | "loading" | "result";
@@ -143,7 +144,7 @@ export default function RetroModePage() {
 
                 {/* ── RESULT ── */}
                 {(step === "result" || (step === "loading" && object)) && object && (
-                    <RetroResult data={object as Partial<import("@/lib/ai/schemas").RetroMode>} isStreaming={isLoading} sharePayload={sharePayload} onReset={() => setStep("input")} />
+                    <RetroResult data={object as Partial<import("@/lib/ai/schemas").RetroMode>} isStreaming={isLoading} sharePayload={sharePayload} onReset={() => setStep("input")} exBirthData={{ year: Number(exData.year), month: Number(exData.month), day: Number(exData.day) }} />
                 )}
 
                 {error && (
@@ -162,11 +163,13 @@ function RetroResult({
     isStreaming,
     sharePayload,
     onReset,
+    exBirthData,
 }: {
     data: Partial<import("@/lib/ai/schemas").RetroMode>;
     isStreaming: boolean;
     sharePayload: import("@/lib/sharing/shareUtils").SharePayload;
     onReset: () => void;
+    exBirthData: { year: number; month: number; day: number };
 }) {
     return (
         <motion.div className="space-y-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -243,6 +246,11 @@ function RetroResult({
             {!isStreaming && (
                 <div className="flex flex-col items-center gap-3 pt-4">
                     <ShareViralButton payload={sharePayload} variant="cta" />
+                    <SaveToVaultButton
+                        birthData={exBirthData}
+                        dominantEnergy={data.element_story?.their_element ?? "Water"}
+                        archetype={data.pairing_label ?? "Ex"}
+                    />
                     <button onClick={onReset} className="text-sm text-white/30 hover:text-white/50 transition-colors">
                         Analyze Another Ex
                     </button>

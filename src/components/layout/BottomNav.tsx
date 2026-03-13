@@ -4,13 +4,13 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Home, Grid3X3, CreditCard, User } from "lucide-react";
+import { Home, Grid3X3, CreditCard, Lock } from "lucide-react";
 
 const NAV_ITEMS = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/features", icon: Grid3X3, label: "Features" },
     { href: "/pricing", icon: CreditCard, label: "Pricing" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/profile", icon: Lock, label: "My Vault" },
 ] as const;
 
 export default function BottomNav() {

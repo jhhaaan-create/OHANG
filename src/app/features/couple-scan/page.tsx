@@ -14,6 +14,7 @@ import ShareViralButton from "@/components/ui/ShareViralButton";
 import { StreamingTypewriter } from "@/components/ui/TypewriterText";
 import { triggerElementalHaptic } from "@/lib/utils/haptic";
 import { buildShareUrl } from "@/lib/sharing/shareUtils";
+import SaveToVaultButton from "@/components/ui/SaveToVaultButton";
 import type { ElementType } from "@/lib/constants/archetypes";
 
 type Step = "input" | "loading" | "result";
@@ -305,6 +306,13 @@ function CoupleScanResult({
             {!isStreaming && (
                 <div className="flex flex-col items-center gap-3 pt-4">
                     <ShareViralButton payload={sharePayload} variant="cta" />
+                    {data.person_b && (
+                        <SaveToVaultButton
+                            birthData={{ year: 2000, month: 1, day: 1 }}
+                            dominantEnergy={data.person_b.dominant_element ?? "Water"}
+                            archetype={data.person_b.face_archetype ?? "Partner"}
+                        />
+                    )}
                     <button onClick={onReset} className="text-sm text-white/30 hover:text-white/50 transition-colors">
                         Scan Another Couple
                     </button>
